@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Exercise 3</title>
+
+    <link rel="stylesheet" href="bootstrap.min.css">
+</head>
+<body style="margin:2%">
+    
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <select id="kolom" class="form-control"></select>  
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <div class="form-group">
+                    <input type="text" id="search" class="form-control" autocomplete="off">
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <button onclick="getData()" class="btn btn-primary">Cari</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered" style="width:100%">
+                    <thead><tr id="header"></tr></thead>
+                    <tbody id="body"></tbody>
+                </table>
+            </div>
+        </div>
+    
+    <script src="data.js"></script>
+    <script>
+        var dt = data.results;
+        
+        init();
+        getData();
+
+
+        function init()
+        {
+            header = Object.keys(dt[0]);
+            header.forEach(function(item){
+                var head = item.split('_');
+                if(head.length > 1){
+                    kolomheader = head.join(' ');
+                } else {
+                    kolomheader = item;
+                }
+
+                document.getElementById('header').innerHTML += '<th class="text-center align-middle">'+kolomheader+'</th>';
+                document.getElementById('kolom').innerHTML += '<option value="'+item+'">'+kolomheader+'</option>';
+            });
+        }
+
+        function getData()
+        {
+            var search = document.getElementById('search').value;
+            var kolom = document.getElementById('kolom').value;
+
+            document.getElementById('body').innerHTML = '';
+
+            if(search == ""){
+                results = dt;
+            } else {
+                var results = dt.filter(function(row){
+                    datavalue = row[kolom]; 
+
+                    if(datavalue.toLowerCase().search(search.toLowerCase()) > -1){   ;
+                        return true;
+                    }
+                });  
+            }
+
+            results.forEach(function(item){
+                var tr = '<tr>';
+                
+                header.forEach(function(h){
+                    value = item[h];
+
+                    if(Array.isArray(value)){
+                        td_value = value.join('<br>'); 
+                    } else {
+                        td_value = value;
+                    }
+
+                    tr += '<td>'+td_value+'</td>';
+                });
+                tr += '</tr>';
+
+                document.getElementById('body').innerHTML += tr;
+            });
+        }
+        
+    </script>
+    
+
+</body>
+</html>
